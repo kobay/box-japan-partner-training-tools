@@ -54,7 +54,7 @@
     },
     "macos": {
       "identifier": "org.kobay.ptt"
-    },
+    }
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
