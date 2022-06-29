@@ -51,7 +51,10 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
-    }
+    },
+    "macos": {
+      "identifier": "org.kobay.ptt"
+    },
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
