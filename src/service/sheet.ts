@@ -1,14 +1,14 @@
 import fs from 'fs-extra'
 import cli from 'cli-ux'
 import {google, Auth} from 'googleapis'
-import {DateTime} from 'luxon'
+// import {DateTime} from 'luxon'
 import TokenCache from '../utils/token-cache'
 import CSMError from '../error'
 import ServiceBase from './service-base'
 import {Settings} from '../utils/settings'
 
 // spread sheetは、2100行目以降しか相手にしない
-const SHEET_START_ROW = 2100
+const SHEET_START_ROW = 2
 
 class GSheetManager extends ServiceBase {
   private readonly tokenCache
@@ -69,7 +69,7 @@ class GSheetManager extends ServiceBase {
       throw new CSMError(`Range specified is invalid fromRow: ${fromRow}, toRow: ${toRow}`)
     }
 
-    const range = `answers!A${fromRow}:Y${toRow}`
+    const range = `フォームの回答 1!A${fromRow}:Y${toRow}`
     const oAuth2Client = await this.authorize()
     const sheets = google.sheets({version: 'v4', auth: oAuth2Client})
 
@@ -113,36 +113,31 @@ function colValue(row: string[]) {
 
 function makeRowArgs(row: string[], rowNumber: number): GSheetRowData {
   const col = colValue(row)
-  const mark = col('A')
-  const timeStamp = col('B')
-  const companyName = col('G')
-  const eid = col('H')
-  const sharedURL = col('W')
-  const dateRange = col('K')
-  const comment = col('S')
-  const {startDate, endDate} = getDateRange(dateRange)
+  const timestamp = col('A')
+  const email = col('B')
+  const score = col('C')
+  const companyName = col('D')
+  const divisionName = col('E')
+  const name = col('F')
 
   return {
     rowNumber,
-    mark,
-    timeStamp,
+    timestamp,
+    email,
+    score,
     companyName,
-    eid,
-    sharedURL,
-    dateRange,
-    comment,
-    startDate,
-    endDate,
+    divisionName,
+    name,
   }
 }
 
-function getDateRange(range: string) {
-  const num = Number(range.charAt(0))
-  const dt = DateTime.now()
-  const startDate = dt.minus({months: num}).startOf('month').toISODate()
-  const endDate = dt.minus({months: 1}).endOf('month').toISODate()
-  return {startDate, endDate}
-}
+// function getDateRange(range: string) {
+//   const num = Number(range.charAt(0))
+//   const dt = DateTime.now()
+//   const startDate = dt.minus({months: num}).startOf('month').toISODate()
+//   const endDate = dt.minus({months: 1}).endOf('month').toISODate()
+//   return {startDate, endDate}
+// }
 
 interface GSheetCredential {
   installed: {
@@ -165,15 +160,13 @@ interface GSheetCredential {
 
 interface GSheetRowData {
   rowNumber: number;
-  mark: string;
-  timeStamp: string;
+  timestamp: string;
+  email: string;
   companyName: string;
-  eid: string;
-  sharedURL: string;
-  dateRange: string;
-  comment: string;
-  startDate: string;
-  endDate: string;
+  divisionName: string;
+  name: string;
+  score: string;
+
 }
 
 export {GSheetManager, GSheetRowData}

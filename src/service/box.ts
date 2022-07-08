@@ -9,22 +9,26 @@ import fs from 'node:fs'
 import {GSheetRowData} from './sheet'
 import {BoxConfig, Settings} from '../utils/settings'
 import BoxNodeSDK from 'box-node-sdk/lib/box-node-sdk'
-// import TokenCache from '../utils/token-cache'
+import TokenCache from '../utils/token-cache'
 import BoxClient from 'box-node-sdk/lib/box-client'
-import BoxTokenStore from '../utils/BoxTokenStore'
+
+interface TokenInfo {
+  accessToken: string;
+  refreshToken: string;
+  accessTokenTTLMS: number;
+  acquiredAtMS: number;
+}
 
 export default class BoxManager extends ServiceBase {
   private sdk: BoxNodeSDK
   // private saClient: BoxClient
 
-  // private tokenCache
+  private tokenCache
   private boxConfig: BoxConfig
-  private boxTokenStore: BoxTokenStore<BoxTokenInfo>
 
   constructor(settings: Settings) {
     super(settings)
-    // this.tokenCache = new TokenCache<TokenInfo>(Settings.CONFIG_FOLDER_PATH, 'box', 1)
-    this.boxTokenStore = new BoxTokenStore(Settings.CONFIG_FOLDER_PATH)
+    this.tokenCache = new TokenCache<TokenInfo>(Settings.CONFIG_FOLDER_PATH, 'box', 1)
     this.boxConfig = this.settings.settingsInfo.box
     const {CLIENT_ID, CLIENT_SECRET} = this.settings.settingsInfo.box
     // const config = fs.readJSONSync(settings.settingsInfo.boxAuthConfigFilePath)
@@ -34,25 +38,21 @@ export default class BoxManager extends ServiceBase {
   }
 
   async login() {
-    // this.tokenCache.clear()
-    this.boxTokenStore.clear(err => {
-      console.log('failed to clear boxTokenStore', err)
-    })
+    this.tokenCache.clear()
     await this.getToken()
   }
 
   async getClient() {
     const tokenInfo = await this.getToken()
-    // const client = this.sdk.getBasicClient(tokenInfo.accessToken)
-    const client = this.sdk.getPersistentClient(tokenInfo, this.boxTokenStore)
+    const client = this.sdk.getBasicClient(tokenInfo.accessToken)
     return client
   }
 
-  async getToken(): Promise<BoxTokenInfo> {
-    // let tokenInfo = this.tokenCache.read()
-    // if (tokenInfo) {
-    //   return tokenInfo
-    // }
+  async getToken(): Promise<TokenInfo> {
+    let tokenInfo = this.tokenCache.read()
+    if (tokenInfo) {
+      return tokenInfo
+    }
 
     const app = express()
 
@@ -95,12 +95,12 @@ export default class BoxManager extends ServiceBase {
     // 認可コードからアクセストークン類を取り出す（ここから通常のBOX APIの利用方法）
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const tokenInfo = await this.sdk.getTokensAuthorizationCodeGrant(code) as BoxTokenInfo
+    tokenInfo = await this.sdk.getTokensAuthorizationCodeGrant(code)
     if (!tokenInfo) {
       throw new CSMError('failed to get tokenInfo')
     }
 
-    // this.tokenCache.write(tokenInfo)
+    this.tokenCache.write(tokenInfo)
     return tokenInfo
   }
 
@@ -146,11 +146,4 @@ export default class BoxManager extends ServiceBase {
       throw new CSMError(`failed to upload ${filePath}`, error)
     }
   }
-}
-
-export interface BoxTokenInfo {
-  accessToken: string
-  refreshToken: string
-  accessTokenTTLMS: number
-  acquiredAtMS: number
 }

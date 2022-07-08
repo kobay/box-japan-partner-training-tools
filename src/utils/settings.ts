@@ -12,7 +12,7 @@ export class Settings {
     return this._settingsInfo
   }
 
-  static CONFIG_FOLDER_PATH = path.join(os.homedir(), '.csm')
+  static CONFIG_FOLDER_PATH = path.join(os.homedir(), '.ptt')
   static SETTINGS_FILE_PATH = path.join(Settings.CONFIG_FOLDER_PATH, 'settings.json')
 
   private _settingsInfo: SettingsInfo | undefined
@@ -64,19 +64,10 @@ export class Settings {
         const settings: SettingsInfo = {
           // boxAuthConfigFilePath: path.join(Settings.CONFIG_FOLDER_PATH, 'box-auth-config.json'),
           sheetAuthConfigFilePath: path.join(Settings.CONFIG_FOLDER_PATH, 'sheet-auth-config.json'),
-          downloadsFolderPath: path.join(os.homedir(), 'Downloads', 'CSM-Downloads'),
-          tableau: {
-            // PAT: 'yprUmxFxTLibZjtCANktOA==:os8aXwrOEBAUC604YOMWpQ9vF4vmD0k6',
-            PAT_NAME: 'Tableau-PAT',
-            PAT: '<your PAT>',
-            URL: 'https://us-west-2b.online.tableau.com/',
-            API_VERSION: '3.14',
-            VIEW_ID_OVERVIEW: 'dcdd3a4a-a281-40d7-b813-7c2181435d16',
-            VIEW_ID_PRODUCT_ACTION: '3f84cade-5f7f-4acf-98c4-c1c7c42f603c',
-          },
+          downloadsFolderPath: path.join(os.homedir(), 'Downloads', 'PTT-Downloads'),
           sheet: {
             SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-            SPREAD_SHEET_ID: '10cyEIHhwoVmvlkINiEfz5m_UaYF2KMQtcJZ0ozcMb1I',
+            SPREAD_SHEET_ID: '11MAVujHiKtCJBiz4xnK4_4CJ63SCTPBBT7jFe9O7z44', // TEMP_[No1] Box Japan Certified Sales認定試験（回答）
           },
           box: {
             CLIENT_ID: 'i5hzl48pus5j157t3xw4sgfnr13zbh52',
@@ -111,7 +102,7 @@ export class Settings {
 export interface SettingsInfo {
   sheetAuthConfigFilePath: string;
   downloadsFolderPath: string;
-  tableau: TableauConfig;
+  // tableau: TableauConfig;
   sheet: SheetConfig;
   box: BoxConfig;
 }
