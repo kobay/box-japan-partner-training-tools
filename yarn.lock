@@ -1282,10 +1282,10 @@ body-parser@1.20.0:
     type-is "~1.6.18"
     unpipe "1.0.0"
 
-box-node-sdk@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/box-node-sdk/-/box-node-sdk-2.3.0.tgz#f581812038ff77f16836b51136a6b5088ddddd83"
-  integrity sha512-wDJml1CYVEI7cgsyQeiW79yqwYBfAWCCvW4t3boVNj40AHPXNb3WTWYuEdA9yWPMOUGcwakTNl+IkJuGLMsIxg==
+box-node-sdk@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/box-node-sdk/-/box-node-sdk-2.4.0.tgz#14a461b9414afab1dbfc8730c4e9dfef2a516d6f"
+  integrity sha512-toH1ruM6sBA/0n0h1xOjbRLxtVwGlELzqzxGDxRKznXIX5RAz0OJPHCfWPkw3J8iHcdjUxxLYo+F0xvmjmg2aw==
   dependencies:
     "@types/bluebird" "^3.5.35"
     "@types/node" "^15.3.1"
